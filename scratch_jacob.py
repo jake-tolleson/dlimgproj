@@ -15,6 +15,7 @@ def crop_digit(img, json_file, digit):
     pic = img[json_file['digitStruct'][digit]['bbox']['y1']:json_file['digitStruct'][digit]['bbox']['y2'],
                 json_file['digitStruct'][digit]['bbox']['x1']:json_file['digitStruct'][digit]['bbox']['x2']]
     return(pic)
+
 crop_digit(train_img_path, train_json_path, 0)
 crop_digit(test_img_path, test_json_path, 0)
 
