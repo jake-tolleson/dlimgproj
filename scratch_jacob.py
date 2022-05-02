@@ -55,7 +55,7 @@ def train_cnn(train_img_path, train_json_path, test_img_path, test_json_path):
 train_data = pd.read_json(train_json_path)
 test_data = pd.read_json(test_json_path)
 
-
+##maybe try paddings vs rescaling
 ## DATA PREPROCESSING
 # Find dimensions of largest image in data
 def find_max_dim(data):
