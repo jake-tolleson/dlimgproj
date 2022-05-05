@@ -97,18 +97,6 @@ for index, label in enumerate(test_data['boxes']):
     test_data['label'].loc[index] = digit_list
 
 
-# Some of these labels seem incorrect...
-train_data.iloc[33396,0] # label shows 19
-train_data.iloc[33396,1] # image looks like a single 8 or 9
-
-
-# Now lets do some image preprocessing
-
-# We first need to crop down all images to specified BB sizes
-train_data.boxes[0] # we need min(top) and min(left) from all BBs. Then we do top+height and left+width to get the bottom right x,y coords
-
-
-
 # Finding BB for train Data
 train_data['BB'] = 0
 train_data = train_data.astype('object')
@@ -292,7 +280,7 @@ test = test.astype('object')
 for idx,img in enumerate(test['filename']):
     img_path = os.path.join(test_cropped_path, img)
     test['image'].loc[idx] = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE) / 255.0
-    test['label'].loc[idx] = tf.convert_to_tensor(test['label'][idx])
+    #test['label'].loc[idx] = tf.convert_to_tensor(test['label'][idx])
 
 
 inputs = tf.keras.layers.Input(shape=(int(max([train_max_height,test_max_height])),int(max([train_max_width,test_max_width])),1), name='input') 
