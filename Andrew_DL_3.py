@@ -57,6 +57,16 @@ def convert_digit_to_array(digit):
 
 
 
+# Finding max length digit
+max_length = 0
+
+for label in train_data['label']:
+    if len(label) > max_length:
+        max_length = len(label) 
+        
+max_length # max length is 6. Means we need 7 output layers. 1 for each of 6 digits and the last will represent length
+
+
 # Creating digit labels for train data
 train_data['label'] = 0
 train_data = train_data.astype('object')
@@ -65,7 +75,7 @@ for index, label in enumerate(train_data['boxes']):
     digit_list = []
     for digit in label:
         digit_list.append(convert_digit_to_array(digit['label']))
-    while len(digit_list) < 6:
+    while len(digit_list) < max_length:
         digit_list.append(np.array([0,0,0,0,0,0,0,0,0,0]))
     digit_list.append(convert_digit_to_array(len(label)))
     train_data['label'].loc[index] = digit_list
@@ -81,7 +91,7 @@ for index, label in enumerate(test_data['boxes']):
     digit_list = []
     for digit in label:
         digit_list.append(convert_digit_to_array(digit['label']))
-    while len(digit_list) < 6:
+    while len(digit_list) < max_length:
         digit_list.append(np.array([0,0,0,0,0,0,0,0,0,0]))
     digit_list.append(convert_digit_to_array(len(label)))
     test_data['label'].loc[index] = digit_list
@@ -90,15 +100,6 @@ for index, label in enumerate(test_data['boxes']):
 # Some of these labels seem incorrect...
 train_data.iloc[33396,0] # label shows 19
 train_data.iloc[33396,1] # image looks like a single 8 or 9
-
-# Finding max length digit
-max_length = 0
-
-for label in train_data['label']:
-    if len(label) > max_length:
-        max_length = len(label) 
-        
-max_length # max length is 6. Means we need 7 output layers. 1 for each of 6 digits and the last will represent length
 
 
 # Now lets do some image preprocessing
