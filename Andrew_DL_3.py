@@ -368,13 +368,13 @@ y_test = [y_test1,y_test2,y_test3,y_test4,y_test5,y_test6,y_test7]
 
 
 inputs = tf.keras.layers.Input(shape=(int(max([train_max_height,test_max_height])),int(max([train_max_width,test_max_width])),3), name='input') 
-x = tf.keras.layers.Conv2D(filters=64,kernel_size = 7, strides = 1, padding = "same", activation = "relu")(inputs)
+x = tf.keras.layers.Conv2D(filters=256,kernel_size = 7, strides = 1, padding = "same", activation = "relu")(inputs)
+x = tf.keras.layers.MaxPooling2D(pool_size = 2, strides = 2, padding = "valid")(x)
+x = tf.keras.layers.Conv2D(filters=256,kernel_size = 3, strides = 1, padding = "same", activation = "relu")(x)
+x = tf.keras.layers.Conv2D(filters=128,kernel_size = 3, strides = 1, padding = "same", activation = "relu")(x)
 x = tf.keras.layers.MaxPooling2D(pool_size = 2, strides = 2, padding = "valid")(x)
 x = tf.keras.layers.Conv2D(filters=128,kernel_size = 3, strides = 1, padding = "same", activation = "relu")(x)
 x = tf.keras.layers.Conv2D(filters=128,kernel_size = 3, strides = 1, padding = "same", activation = "relu")(x)
-x = tf.keras.layers.MaxPooling2D(pool_size = 2, strides = 2, padding = "valid")(x)
-x = tf.keras.layers.Conv2D(filters=256,kernel_size = 3, strides = 1, padding = "same", activation = "relu")(x)
-x = tf.keras.layers.Conv2D(filters=256,kernel_size = 3, strides = 1, padding = "same", activation = "relu")(x)
 x = tf.keras.layers.MaxPooling2D(pool_size = 2, strides = 2, padding = "valid")(x)
 x = tf.keras.layers.Flatten()(x)
 x = tf.keras.layers.Dense(128, activation = 'relu')(x)
