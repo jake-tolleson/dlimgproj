@@ -53,32 +53,6 @@ def convert_digit_to_array(digit):
     if digit == 10.0:
         return(np.array([1,0,0,0,0,0,0,0,0,0]))
 
-# Convert labels to one-hot encodings
-def convert_digit_to_array(digit):
-    if digit == 0.0:
-        return([1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
-    if digit == 1.0:
-        return([0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
-    if digit == 2.0:
-        return([0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
-    if digit == 3.0:
-        return([0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0])
-    if digit == 4.0:
-        return([0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0])
-    if digit == 5.0:
-        return([0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0])
-    if digit == 6.0:
-        return([0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0])
-    if digit == 7.0:
-        return([0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0])
-    if digit == 8.0:
-        return([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0])
-    if digit == 9.0:
-        return([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0])
-    if digit == 10.0:
-        return([1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
-
-
 '''
 # Finding max length digit
 max_length = 0
