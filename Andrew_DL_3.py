@@ -28,8 +28,6 @@ test_data = pd.read_json(test_json_path)
 
 # Translate Data Labels into one-hot encodings
 # 
-
-
 # Convert labels to one-hot encodings
 def convert_digit_to_array(digit):
     if digit == 0.0:
@@ -55,8 +53,33 @@ def convert_digit_to_array(digit):
     if digit == 10.0:
         return(np.array([1,0,0,0,0,0,0,0,0,0]))
 
+# Convert labels to one-hot encodings
+def convert_digit_to_array(digit):
+    if digit == 0.0:
+        return([1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
+    if digit == 1.0:
+        return([0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
+    if digit == 2.0:
+        return([0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
+    if digit == 3.0:
+        return([0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0])
+    if digit == 4.0:
+        return([0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0])
+    if digit == 5.0:
+        return([0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0])
+    if digit == 6.0:
+        return([0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0])
+    if digit == 7.0:
+        return([0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0])
+    if digit == 8.0:
+        return([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0])
+    if digit == 9.0:
+        return([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0])
+    if digit == 10.0:
+        return([1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
 
 
+'''
 # Finding max length digit
 max_length = 0
 
@@ -65,7 +88,7 @@ for label in train_data['label']:
         max_length = len(label) 
         
 max_length # max length is 6. Means we need 7 output layers. 1 for each of 6 digits and the last will represent length
-
+'''
 
 # Creating digit labels for train data
 train_data['label'] = 0
@@ -75,7 +98,7 @@ for index, label in enumerate(train_data['boxes']):
     digit_list = []
     for digit in label:
         digit_list.append(convert_digit_to_array(digit['label']))
-    while len(digit_list) < max_length:
+    while len(digit_list) < 6:
         digit_list.append(np.array([0,0,0,0,0,0,0,0,0,0]))
     digit_list.append(convert_digit_to_array(len(label)))
     train_data['label'].loc[index] = digit_list
@@ -91,10 +114,12 @@ for index, label in enumerate(test_data['boxes']):
     digit_list = []
     for digit in label:
         digit_list.append(convert_digit_to_array(digit['label']))
-    while len(digit_list) < max_length:
+    while len(digit_list) < 6:
         digit_list.append(np.array([0,0,0,0,0,0,0,0,0,0]))
     digit_list.append(convert_digit_to_array(len(label)))
     test_data['label'].loc[index] = digit_list
+
+
 
 
 # Finding BB for train Data
@@ -264,26 +289,111 @@ test_cropped_path = 'C:/Users/Andrew/Desktop/Spring 2022/BZAN 554/Group Assignme
 # Need to make train and test values
 train = train_data.drop(columns=['boxes','BB'])
 
-# creating a column to hold images
+# using a subset of the data
+num_train_images = 100
+train = train.iloc[0:num_train_images,:]
+
+# creating a column to hold images and individual labels
 train['image'] = 0
+train['y1'] = 0
+train['y2'] = 0
+train['y3'] = 0
+train['y4'] = 0
+train['y5'] = 0
+train['y6'] = 0
+train['y7'] = 0
 train = train.astype('object')
 
+x_train = np.array(None)
+y_train1 = np.array(None)
+y_train2 = np.array(None)
+y_train3 = np.array(None)
+y_train4 = np.array(None)
+y_train5 = np.array(None)
+y_train6 = np.array(None)
+y_train7 = np.array(None)
+
+# Reading in images
 for idx,img in enumerate(train['filename']):
     img_path = os.path.join(train_cropped_path, img)
-    train['image'].loc[idx] = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE) / 255.0
-    #train['label'].loc[idx] = tf.convert_to_tensor(train['label'][idx])
+    x_train = np.append(x_train,(cv2.imread(img_path) / 255.0))
+    y_train1 = np.append(y_train1,train['label'].loc[idx][0])
+    y_train2 = np.append(y_train2,train['label'].loc[idx][1])
+    y_train3 = np.append(y_train3,train['label'].loc[idx][2])
+    y_train4 = np.append(y_train4,train['label'].loc[idx][3])
+    y_train5 = np.append(y_train5,train['label'].loc[idx][4])
+    y_train6 = np.append(y_train6,train['label'].loc[idx][5])
+    y_train7 = np.append(y_train7,train['label'].loc[idx][6])
 
+
+x_train = np.array(x_train[1:]).reshape(num_train_images, 423, 616, 3)
+x_train = x_train.astype('float32')
+x_train = tf.convert_to_tensor(x_train)
+y_train1 = np.array(y_train1[1:], dtype='float32').reshape(num_train_images,10)
+y_train2 = np.array(y_train2[1:], dtype='float32').reshape(num_train_images,10)
+y_train3 = np.array(y_train3[1:], dtype='float32').reshape(num_train_images,10)
+y_train4 = np.array(y_train4[1:], dtype='float32').reshape(num_train_images,10)
+y_train5 = np.array(y_train5[1:], dtype='float32').reshape(num_train_images,10)
+y_train6 = np.array(y_train6[1:], dtype='float32').reshape(num_train_images,10)
+y_train7 = np.array(y_train7[1:], dtype='float32').reshape(num_train_images,10)
+y_train = [y_train1,y_train2,y_train3,y_train4,y_train5,y_train6,y_train7]
+
+
+
+# Need to make train and test values
 test = test_data.drop(columns=['boxes','BB'])
+
+# using a subset of the data
+num_test_images = 100
+test = test.iloc[0:num_test_images,:]
+
+# creating a column to hold images and individual labels
 test['image'] = 0
+test['y1'] = 0
+test['y2'] = 0
+test['y3'] = 0
+test['y4'] = 0
+test['y5'] = 0
+test['y6'] = 0
+test['y7'] = 0
 test = test.astype('object')
 
+x_test = np.array(None)
+y_test1 = np.array(None)
+y_test2 = np.array(None)
+y_test3 = np.array(None)
+y_test4 = np.array(None)
+y_test5 = np.array(None)
+y_test6 = np.array(None)
+y_test7 = np.array(None)
+
+# Reading in images
 for idx,img in enumerate(test['filename']):
     img_path = os.path.join(test_cropped_path, img)
-    test['image'].loc[idx] = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE) / 255.0
-    #test['label'].loc[idx] = tf.convert_to_tensor(test['label'][idx])
+    x_test = np.append(x_test,(cv2.imread(img_path) / 255.0))
+    y_test1 = np.append(y_test1,test['label'].loc[idx][0])
+    y_test2 = np.append(y_test2,test['label'].loc[idx][1])
+    y_test3 = np.append(y_test3,test['label'].loc[idx][2])
+    y_test4 = np.append(y_test4,test['label'].loc[idx][3])
+    y_test5 = np.append(y_test5,test['label'].loc[idx][4])
+    y_test6 = np.append(y_test6,test['label'].loc[idx][5])
+    y_test7 = np.append(y_test7,test['label'].loc[idx][6])
 
 
-inputs = tf.keras.layers.Input(shape=(int(max([train_max_height,test_max_height])),int(max([train_max_width,test_max_width])),1), name='input') 
+x_test = np.array(x_test[1:]).reshape(num_test_images, 423, 616, 3)
+x_test = x_test.astype('float32')
+x_test = tf.convert_to_tensor(x_test)
+y_test1 = np.array(y_test1[1:], dtype='float32').reshape(num_test_images,10)
+y_test2 = np.array(y_test2[1:], dtype='float32').reshape(num_test_images,10)
+y_test3 = np.array(y_test3[1:], dtype='float32').reshape(num_test_images,10)
+y_test4 = np.array(y_test4[1:], dtype='float32').reshape(num_test_images,10)
+y_test5 = np.array(y_test5[1:], dtype='float32').reshape(num_test_images,10)
+y_test6 = np.array(y_test6[1:], dtype='float32').reshape(num_test_images,10)
+y_test7 = np.array(y_test7[1:], dtype='float32').reshape(num_test_images,10)
+y_test = [y_test1,y_test2,y_test3,y_test4,y_test5,y_test6,y_test7]
+
+
+inputs = tf.keras.layers.Input(shape=(int(max([train_max_height,test_max_height])),int(max([train_max_width,test_max_width])),3), name='input') 
 x = tf.keras.layers.Conv2D(filters=64,kernel_size = 7, strides = 1, padding = "same", activation = "relu")(inputs)
 x = tf.keras.layers.MaxPooling2D(pool_size = 2, strides = 2, padding = "valid")(x)
 x = tf.keras.layers.Conv2D(filters=128,kernel_size = 3, strides = 1, padding = "same", activation = "relu")(x)
@@ -306,17 +416,9 @@ yhat_length = tf.keras.layers.Dense(10, activation = 'softmax')(x)
 model = tf.keras.Model(inputs = inputs, outputs = [yhat_1, yhat_2, yhat_3, yhat_4, yhat_5, yhat_6, yhat_length])
 model.summary()
 #Compile model
-model.compile(loss = 'categorical_crossentropy', optimizer = tf.keras.optimizers.Adam(learning_rate = 0.001))
+model.compile(loss = 'categorical_crossentropy', optimizer = tf.keras.optimizers.Adam(learning_rate = 0.0001))
 
 #Fit model
-model.fit(x=train['image'][0],y=train['label'][0], batch_size=1, epochs=1) 
-train['image'][3].shape
-train['label'][0]
-
-#Compute multiclass accuray
-yhat = model.predict(x=X_test)
-yhat_sparse = [int(np.where(yhat_sub ==np.max(yhat_sub))[0]) for yhat_sub in yhat]
-y_test
-sum(yhat_sparse == y_test) / len(y_test)
+model.fit(x=x_train,y=y_train, batch_size=1, epochs=1) 
 
 
